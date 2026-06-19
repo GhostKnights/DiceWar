@@ -1,5 +1,5 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1781595924
-dice_area.gd::GDScript::7944592525231170279::1781082861::0::1::::<>Area3D<><>0<>0<><>::
-game_root.tscn::PackedScene::7189715900264439600::1781596123::0::1::::<><><>0<>0<><>::uid://dlgojptiagtmt::::res://dice_area.gd
+::res://::1781856024
+dice.gd::GDScript::7944592525231170279::1781596213::0::1::::<>RigidBody3D<><>0<>0<><>::
+game_root.tscn::PackedScene::7189715900264439600::1781596800::0::1::::<><><>0<>0<><>::uid://dlgojptiagtmt::::res://dice.gd
 icon.svg::CompressedTexture2D::1122958392891345783::1781081999::1781082004::1::::<><><>0<>0<>22102e0795a655fe2400aaedca2684d8<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
