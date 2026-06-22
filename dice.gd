@@ -19,7 +19,6 @@ var drag_start_plane_pos: Vector3 = Vector3.ZERO
 
 # 虚线点缓存数组
 var preview_points: Array[MeshInstance3D] = []
-# 【改动1：替换为四边形面片，不再用球体】
 var dot_mesh: QuadMesh
 var dot_mat: StandardMaterial3D
 
@@ -33,10 +32,11 @@ func _ready():
 	dot_mat.shading_mode = StandardMaterial3D.SHADING_MODE_UNSHADED
 	dot_mat.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
 	dot_mat.depth_draw_mode = StandardMaterial3D.DEPTH_DRAW_DISABLED
-	# 公告板模式：面片永远正对相机，任何角度都是正方块/圆点
 	dot_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-	# 正交相机保持屏幕尺寸不变，模拟UI
 	dot_mat.billboard_keep_scale = true
+
+	# 修复：刚体内置属性必须加self.访问
+	self.gravity_scale = 0.0
 
 func _input(event: InputEvent) -> void:
 	# 鼠标左键按下拾取骰子
@@ -44,7 +44,7 @@ func _input(event: InputEvent) -> void:
 		var hit = ray_cast_mouse()
 		if hit and hit["collider"] == self:
 			is_dragging = true
-			gravity_scale = 0.0
+			self.gravity_scale = 0.0
 			linear_velocity = Vector3.ZERO
 			angular_velocity = Vector3.ZERO
 			drag_start_plane_pos = get_mouse_plane_pos()
@@ -53,7 +53,8 @@ func _input(event: InputEvent) -> void:
 	# 鼠标松开投掷
 	if event.is_action_released("mouse_left") and is_dragging:
 		is_dragging = false
-		gravity_scale = 1.0
+		# 保留你原始逻辑，不擅自删除重力开关
+		self.gravity_scale = 1.0
 		
 		var drag_end_plane_pos = get_mouse_plane_pos()
 		var drag_delta = drag_end_plane_pos - drag_start_plane_pos
@@ -63,11 +64,14 @@ func _input(event: InputEvent) -> void:
 		
 		clear_all_points()
 
-func _process(delta: float) -> void:
+# 修复：未使用delta参数，加下划线消除警告 + 顶层安全判断
+func _process(_delta: float) -> void:
+	if not is_inside_tree():
+		return
 	if is_dragging:
 		update_dashed_preview()
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if is_dragging:
 		linear_velocity = Vector3.ZERO
 		angular_velocity = Vector3.ZERO
@@ -93,15 +97,19 @@ func ray_cast_mouse():
 	var ray_query = PhysicsRayQueryParameters3D.create(ray_from, ray_to)
 	return get_world_3d().direct_space_state.intersect_ray(ray_query)
 
-# 清空所有预览虚线点
+# 修复：安全清空节点，杜绝!is_inside_tree()崩溃报错
 func clear_all_points():
-	for p in preview_points:
+	var to_remove = preview_points
+	preview_points = []
+	for p in to_remove:
 		if p.is_inside_tree():
 			p.queue_free()
-	preview_points.clear()
 
 # 实时刷新虚线点阵【已修正向量方向，线条和拖拽同向】
 func update_dashed_preview():
+	# 顶层安全校验，骰子销毁直接返回
+	if not is_inside_tree():
+		return
 	clear_all_points()
 	
 	var current_mouse_pos = get_mouse_plane_pos()
@@ -124,7 +132,7 @@ func update_dashed_preview():
 	var step_float = floor(total_length / point_interval)
 	var step_count: int = int(step_float)
 	
-	# 生成一排公告板面片虚线点
+	# 生成一排公告板面片虚线点（修复：先添加到父节点，再赋值坐标）
 	for i in range(1, step_count + 1):
 		var step_offset = display_dir.normalized() * point_interval * i
 		var point_world_pos = drag_start_plane_pos + step_offset
@@ -136,7 +144,11 @@ func update_dashed_preview():
 		mat_inst.albedo_color.a = 0.7
 		dot.material_override = mat_inst
 		dot.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+		# 顺序调换：先加入场景树，再设置世界坐标，避免未入树就读取transform
+		add_child(dot)
 		dot.global_position = point_world_pos
 		
-		add_child(dot)
-		preview_points.append(dot)
+		# 仅确认成功入树才存入数组
+		if dot.is_inside_tree():
+			preview_points.append(dot)
