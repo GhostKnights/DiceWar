@@ -11,13 +11,27 @@ albedo_color = Color(1, 0.33333334, 0.33333334, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pjpa4"]
 
+[sub_resource type="QuadMesh" id="QuadMesh_xj5yv"]
+size = Vector2(14, 14)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xj5yv"]
+size = Vector3(14.2, 14.2, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xj5yv"]
+albedo_color = Color(0.87900966, 0.43636346, 0.88118494, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pjpa4"]
+material = SubResource("StandardMaterial3D_xj5yv")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bxsma"]
+
 [node name="GameRoot" type="Node3D" unique_id=1439697774]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=2122000675]
-transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 2.741211, 0)
+transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 7.256, 0)
 projection = 1
 current = true
-size = 8.0
+size = 14.832
 
 [node name="Dice" type="RigidBody3D" parent="." unique_id=305620930]
 gravity_scale = 0.0
@@ -35,3 +49,43 @@ shape = SubResource("BoxShape3D_pjpa4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1893039496]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 445.5417, 1321.9818, -5014.337)
+
+[node name="TableBoard" type="StaticBody3D" parent="." unique_id=915346561]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TableBoard" unique_id=410861241]
+mesh = SubResource("QuadMesh_xj5yv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TableBoard" unique_id=1563993009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+shape = SubResource("BoxShape3D_xj5yv")
+
+[node name="EnemyDiceGroup" type="Node3D" parent="." unique_id=1860539343]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7438126, 0)
+
+[node name="EnemyDice1" type="RigidBody3D" parent="EnemyDiceGroup" unique_id=1997340599]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4588623, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyDiceGroup/EnemyDice1" unique_id=1896957525]
+mesh = SubResource("BoxMesh_pjpa4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDiceGroup/EnemyDice1" unique_id=1212687605]
+shape = SubResource("BoxShape3D_bxsma")
+
+[node name="EnemyDice2" type="RigidBody3D" parent="EnemyDiceGroup" unique_id=361781558]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1920166, -0.38999176, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyDiceGroup/EnemyDice2" unique_id=702700967]
+mesh = SubResource("BoxMesh_pjpa4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDiceGroup/EnemyDice2" unique_id=821642961]
+shape = SubResource("BoxShape3D_bxsma")
+
+[node name="EnemyDice3" type="RigidBody3D" parent="EnemyDiceGroup" unique_id=10293004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6119003, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyDiceGroup/EnemyDice3" unique_id=523182326]
+mesh = SubResource("BoxMesh_pjpa4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyDiceGroup/EnemyDice3" unique_id=569904334]
+shape = SubResource("BoxShape3D_bxsma")

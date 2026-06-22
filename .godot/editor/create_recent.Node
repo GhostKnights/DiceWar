@@ -1,7 +1,9 @@
-RigidBody3D
-Marker3D
 CollisionShape3D
 MeshInstance3D
+RigidBody3D
+Node3D
+StaticBody3D
+Marker3D
 Area3D
 DirectionalLight3D
 Camera3D
