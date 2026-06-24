@@ -12,10 +12,10 @@ albedo_color = Color(1, 0.33333334, 0.33333334, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_pjpa4"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_xj5yv"]
-size = Vector2(14, 14)
+size = Vector2(18, 32)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xj5yv"]
-size = Vector3(14.2, 14.2, 0.4)
+size = Vector3(18.4, 32.4, 0.4)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xj5yv"]
 albedo_color = Color(0.87900966, 0.43636346, 0.88118494, 1)
@@ -28,10 +28,12 @@ material = SubResource("StandardMaterial3D_xj5yv")
 [node name="GameRoot" type="Node3D" unique_id=1439697774]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=2122000675]
-transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 7.256, 0)
+transform = Transform3D(1, 0, 0, 0, 0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, -9.521032, 9)
 projection = 1
 current = true
-size = 14.832
+size = 23.0
+near = 0.1
+far = 100.0
 
 [node name="Dice" type="RigidBody3D" parent="." unique_id=305620930]
 gravity_scale = 0.0
@@ -52,6 +54,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 445.5417, 1321.9818, -5014.33
 
 [node name="TableBoard" type="StaticBody3D" parent="." unique_id=915346561]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+axis_lock_linear_z = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TableBoard" unique_id=410861241]
 mesh = SubResource("QuadMesh_xj5yv")
