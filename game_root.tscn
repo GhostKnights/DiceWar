@@ -11,6 +11,10 @@ albedo_color = Color(1, 0.33333334, 0.33333334, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pjpa4"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_xj5yv"]
+friction = 1.3
+bounce = 0.05
+
 [sub_resource type="QuadMesh" id="QuadMesh_xj5yv"]
 size = Vector2(18, 32)
 
@@ -36,6 +40,7 @@ near = 0.1
 far = 100.0
 
 [node name="Dice" type="RigidBody3D" parent="." unique_id=305620930]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -13.295524, 0)
 gravity_scale = 0.0
 script = ExtResource("1_xj5yv")
 
@@ -55,12 +60,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 445.5417, 1321.9818, -5014.33
 [node name="TableBoard" type="StaticBody3D" parent="." unique_id=915346561]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
 axis_lock_linear_z = true
+physics_material_override = SubResource("PhysicsMaterial_xj5yv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TableBoard" unique_id=410861241]
 mesh = SubResource("QuadMesh_xj5yv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TableBoard" unique_id=1563993009]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
 shape = SubResource("BoxShape3D_xj5yv")
 
 [node name="EnemyDiceGroup" type="Node3D" parent="." unique_id=1860539343]

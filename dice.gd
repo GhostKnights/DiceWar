@@ -16,6 +16,8 @@ var drag_start_plane_pos: Vector3 = Vector3.ZERO
 @export var color_strong: Color = Color(1, 0.2, 0.1)
 # 碰撞翻面力度参数
 @export var hit_spin_force: float = 8.0
+# 【新增】虚拟摩擦力参数，越大减速越快
+@export var virtual_friction: float = 2.5
 
 @onready var camera: Camera3D = get_parent().get_node("Camera3D")
 
@@ -39,7 +41,6 @@ func _ready():
 
 	# 无重力物理设置
 	self.gravity_scale = 0.0
-
 
 	# 绑定碰撞信号，撞击骰子自动翻面
 	body_entered.connect(_on_body_collide)
@@ -77,13 +78,25 @@ func _physics_process(delta: float) -> void:
 	if is_dragging:
 		linear_velocity = Vector3.ZERO
 		angular_velocity = Vector3.ZERO
+		return # 拖拽状态直接退出，不执行减速逻辑
 
-	# 强制锁定Z坐标，全程忽略Z轴，仅XY平面滑动
-	var target_z = drag_plane_z
-	if abs(global_position.z - target_z) > 0.001:
-		global_position.z = target_z
-	# 清除所有Z轴向速度，杜绝Z轴负值滑动
-	linear_velocity.z = 0.0
+
+	
+	# 检测当前和多少个物理体接触
+	var contact_count = get_contact_count()
+	print("当前接触物体数量：", contact_count)
+
+	# ========== 新增：纯代码虚拟摩擦力减速逻辑 ==========
+	var slow_factor = 1.0 - virtual_friction * delta
+	slow_factor = max(slow_factor, 0.0) # 防止系数为负反向加速
+	# 仅对XY滑行速度做缩放减速
+	linear_velocity.x *= slow_factor
+	linear_velocity.y *= slow_factor
+	# 低速阈值，速度极低直接归零，避免无限微滑抖动
+	var min_stop_speed = 0.02
+	if linear_velocity.length() < min_stop_speed:
+		linear_velocity = Vector3.ZERO
+	# ====================================================
 
 # 碰撞回调：骰子互撞产生翻转轴力
 func _on_body_collide(hit_body: Node3D) -> void:
